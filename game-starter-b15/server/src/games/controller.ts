@@ -76,32 +76,34 @@ export default class GameController {
   // http://restcookbook.com/HTTP%20Methods/idempotency/
   // try to fire the same requests twice, see what happens
   @Patch('/games/:id([0-9]+)')
+  
   async updateGame(
     @CurrentUser() user: User,
     @Param('id') gameId: number,
     @Body() update: GameUpdate
   ) {
+    console.log('made it here!1')
     const game = await Game.findOneById(gameId)
     if (!game) throw new NotFoundError(`Game does not exist`)
-
+    
+    
+    console.log('made it here2')
     const player = await Player.findOne({ user, game })
-
+    console.log('made it here3')
     if (!player) throw new ForbiddenError(`You are not part of this game`)
     if (game.status !== 'started') throw new BadRequestError(`The game is not started yet`)
     if (player.symbol !== game.turn) throw new BadRequestError(`It's not your turn`)
     if (!isValidTransition(player.symbol, game.board, update.board)) {
       throw new BadRequestError(`Invalid move`)
-    }    
-
-    console.log('2')
+  }    
+  game.moves = game.moves+1 
+    console.log(game.moves)
 
     const winner = calculateWinner(update.board)
-    if (winner) {
+    
+    if (finished(update.board)) {
+      game.status = 'finished'
       game.winner = winner
-      game.status = 'finished'
-    }
-    else if (finished(update.board)) {
-      game.status = 'finished'
     }
     else {
       game.turn = player.symbol === 'x' ? 'o' : 'x'

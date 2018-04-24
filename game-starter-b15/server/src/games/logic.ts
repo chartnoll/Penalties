@@ -6,7 +6,7 @@ export class IsBoard implements ValidatorConstraintInterface {
 
   validate(board: Board) {
     const symbols = [ 'x', 'o', null ]
-    return board.length == 2 &&
+    return board.length == 5 &&
       board.every(row =>
         row.length === 2 &&
         row.every(symbol => symbols.includes(symbol))
@@ -25,29 +25,16 @@ export const isValidTransition = (playerSymbol: Symbol, from: Board, to: Board) 
     .reduce((a,b) => a.concat(b))
     .filter(change => change.from !== change.to)
 
-  return changes.length === 1 && 
-    changes[0].to === playerSymbol && 
-    changes[0].from === null
+  return changes.length === 1}
+
+export const calculateWinner = (board: Board): Symbol | null => {if(board.filter(function(element){element === null}).length >= 3)
+{return 'x'}
+else {return 'o'}
 }
 
-export const calculateWinner = (board: Board): Symbol | null =>
-  board
-    .concat(
-      // vertical winner
-      [0, 1, ].map(n => board.map(row => row[n])) as Row[]
-    )
-    .concat(
-      [
-        // diagonal winner ltr
-        [0, 1,].map(n => board[n][n]),
-        // diagonal winner rtl
-        [0, 1,].map(n => board[2-n][n])
-      ] as Row[]
-    )
-    .filter(row => row[0] && row.every(symbol => symbol === row[0]))
-    .map(row => row[0])[0] || null
-
 export const finished = (board: Board): boolean =>
-  board
-    .reduce((a,b) => a.concat(b) as Row)
-    .every(symbol => symbol !== null)
+  (board[4].includes('o'))
+
+export const goalScored = (board: Board, moves) => {
+  if (moves%2 === 0){}
+} 

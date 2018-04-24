@@ -3,12 +3,12 @@ import User from '../users/entity'
 
 export type Symbol = 'x' | 'o'
 export type Row = [ Symbol | null, Symbol | null ]
-export type Board = [ Row, Row]
+export type Board = [ Row, Row, Row, Row, Row]
 
 type Status = 'pending' | 'started' | 'finished'
 
 const emptyRow: Row = [null, null]
-const emptyBoard: Board = [ emptyRow, emptyRow,]
+const emptyBoard: Board = [ emptyRow, emptyRow, emptyRow, emptyRow, emptyRow,]
 
 @Entity()
 export class Game extends BaseEntity {
@@ -23,10 +23,13 @@ export class Game extends BaseEntity {
   turn: Symbol
 
   @Column('char', {length:1, nullable: true})
-  winner: Symbol
+  winner: Symbol | null
 
   @Column('text', {default: 'pending'})
   status: Status
+
+  @Column('integer', {default:0, nullable: true})
+  moves: number
 
   // this is a relation, read more about them here:
   // http://typeorm.io/#/many-to-one-one-to-many-relations
