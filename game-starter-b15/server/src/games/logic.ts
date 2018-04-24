@@ -6,7 +6,7 @@ export class IsBoard implements ValidatorConstraintInterface {
 
   validate(board: Board) {
     const symbols = [ 'x', 'o', null ]
-    return board.length == 5 &&
+    return board.length == 10 &&
       board.every(row =>
         row.length === 2 &&
         row.every(symbol => symbols.includes(symbol))
@@ -33,8 +33,18 @@ else {return 'o'}
 }
 
 export const finished = (board: Board): boolean =>
-  (board[4].includes('o'))
+  (board[9].includes('x'))
 
 export const goalScored = (board: Board, moves) => {
-  if (moves%2 === 0){}
+  if (moves === 2 && board[1].includes(null)){ return true}
+  else if (moves === 4 && board[2].includes(null)){return true}
+  else if (moves === 6 && board [3].includes(null)){return true}
+  else if (moves === 8 && board [4].includes(null)){return true}
+  else if (moves === 10 && board [5].includes(null)){return true}
+  else if (moves === 12 && board [6].includes(null)){return true}
+  else if (moves === 14 && board [7].includes(null)){return true}
+  else if (moves === 16 && board [8].includes(null)){return true}
+  else if (moves === 18 && board [9].includes(null)){return true}
+  else if (moves === 20 && board [10].includes(null)){return true}
+  
 } 

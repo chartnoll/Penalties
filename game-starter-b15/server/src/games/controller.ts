@@ -105,7 +105,7 @@ export default class GameController {
       game.status = 'finished'
       game.winner = winner
     }
-    else {
+    else if (!(game.moves%2 === 0)) {
       game.turn = player.symbol === 'x' ? 'o' : 'x'
     }
     game.board = update.board
