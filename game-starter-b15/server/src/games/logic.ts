@@ -6,48 +6,24 @@ export class IsBoard implements ValidatorConstraintInterface {
 
   validate(board: Board) {
     const symbols = [ 'x', 'o', null ]
-    return board.length === 3 &&
+    return board.length === 5 &&
       board.every(row =>
-        row.length === 3 &&
+        row.length === 2 &&
         row.every(symbol => symbols.includes(symbol))
       )
   }
 }
 
-export const isValidTransition = (playerSymbol: Symbol, from: Board, to: Board) => {
-  const changes = from
-    .map(
-      (row, rowIndex) => row.map((symbol, columnIndex) => ({
-        from: symbol, 
-        to: to[rowIndex][columnIndex]
-      }))
-    )
-    .reduce((a,b) => a.concat(b))
-    .filter(change => change.from !== change.to)
-
-  return changes.length === 1 && 
-    changes[0].to === playerSymbol && 
-    changes[0].from === null
+export const findPenaltyNumber = ( to ) => {
+  let maximumValue = 0
+  to.map((penArray, index) => {if(checkEachPenlty(penArray, index) > maximumValue) maximumValue = checkEachPenlty(penArray, index)})
+  if(maximumValue === 0) maximumValue = 1
+  return maximumValue
 }
 
-export const calculateWinner = (board: Board): Symbol | null =>
-  board
-    .concat(
-      // vertical winner
-      [0, 1, 2].map(n => board.map(row => row[n])) as Row[]
-    )
-    .concat(
-      [
-        // diagonal winner ltr
-        [0, 1, 2].map(n => board[n][n]),
-        // diagonal winner rtl
-        [0, 1, 2].map(n => board[2-n][n])
-      ] as Row[]
-    )
-    .filter(row => row[0] && row.every(symbol => symbol === row[0]))
-    .map(row => row[0])[0] || null
+const checkEachPenlty = (penArray, index) => {
+  return Math.round(penArray.includes("o") / 2 + penArray.includes("x") / 2) * (index + 1)
+}
 
-export const finished = (board: Board): boolean =>
-  board
-    .reduce((a,b) => a.concat(b) as Row)
-    .every(symbol => symbol !== null)
+
+//const checkRestrictedChanges = (penaltyNumber, )

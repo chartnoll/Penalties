@@ -10,7 +10,7 @@ export default class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id?: number
 
-  @IsString()
+  /*@IsString()
   @MinLength(2)
   @Column('text')
   firstName: string
@@ -18,7 +18,7 @@ export default class User extends BaseEntity {
   @IsString()
   @MinLength(2)
   @Column('text')
-  lastName: string
+  lastName: string*/
 
   @IsEmail()
   @Column('text')
@@ -30,6 +30,7 @@ export default class User extends BaseEntity {
   @Exclude({ toPlainOnly: true })
   password: string
 
+  
   async setPassword(rawPassword: string) {
     const hash = await bcrypt.hash(rawPassword, 10)
     this.password = hash

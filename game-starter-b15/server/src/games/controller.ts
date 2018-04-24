@@ -48,8 +48,10 @@ export default class GameController {
   @HttpCode(201)
   async joinGame(
     @CurrentUser() user: User,
-    @Param('id') gameId: number
+    @Param('id') gameId: number,
+    @Body() 
   ) {
+    console.log("the current user",user)
     const game = await Game.findOneById(gameId)
     if (!game) throw new BadRequestError(`Game does not exist`)
     if (game.status !== 'pending') throw new BadRequestError(`Game is already started`)
@@ -81,6 +83,7 @@ export default class GameController {
     @Param('id') gameId: number,
     @Body() update: GameUpdate
   ) {
+    console.log(user)
     const game = await Game.findOneById(gameId)
     if (!game) throw new NotFoundError(`Game does not exist`)
 
@@ -91,22 +94,10 @@ export default class GameController {
     if (player.symbol !== game.turn) throw new BadRequestError(`It's not your turn`)
     if (!isValidTransition(player.symbol, game.board, update.board)) {
       throw new BadRequestError(`Invalid move`)
-    }    
+    }
 
     console.log('2')
 
-    const winner = calculateWinner(update.board)
-    if (winner) {
-      game.winner = winner
-      game.status = 'finished'
-    }
-    else if (finished(update.board)) {
-      game.status = 'finished'
-    }
-    else {
-      game.turn = player.symbol === 'x' ? 'o' : 'x'
-    }
-    game.board = update.board
     await game.save()
 
     console.log('3')
@@ -119,7 +110,7 @@ export default class GameController {
     return game
   }
 
-  @Authorized()
+  //@Authorized()
   @Get('/games/:id([0-9]+)')
   getGame(
     @Param('id') id: number
@@ -127,10 +118,9 @@ export default class GameController {
     return Game.findOneById(id)
   }
 
-  @Authorized()
+  //@Authorized()
   @Get('/games')
   getGames() {
     return Game.find()
   }
 }
-

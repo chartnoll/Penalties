@@ -2,6 +2,7 @@ import { JsonController, Post, Param, Get, Body, Authorized } from 'routing-cont
 import User from './entity';
 import { io } from '../index'
 
+
 @JsonController()
 export default class UserController {
 
@@ -9,8 +10,10 @@ export default class UserController {
   async signup(
     @Body() data: User
   ) {
+    console.log(data)
     const {password, ...rest} = data
     const entity = User.create(rest)
+    //const entity = rest
     await entity.setPassword(password)
 
     const user = await entity.save()
