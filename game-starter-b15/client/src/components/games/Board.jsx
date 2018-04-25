@@ -2,14 +2,14 @@ import React from 'react'
 import './Board.css'
 import {connect} from 'react-redux'
 
-const renderCel = (makeMove, rowIndex, cellIndex, symbol, hasTurn) => {
+const renderCel = (makeMove, rowIndex, cellIndex, player1or2, hasTurn) => {
   return (
     <button
       className="board-tile"
       disabled={hasTurn}
       onClick={() => makeMove(rowIndex, cellIndex)}
       key={`${rowIndex}-${cellIndex}`}
-    >{symbol || '-'}</button>
+    >{player1or2 || '-'}</button>
   )
 }
 
@@ -34,6 +34,6 @@ const partBoardToShow = (moves) => {
 export default ({board, makeMove, moves}) =>
 board.map((cells, rowIndex) =>
   <div key={rowIndex}>
-    {cells.map((symbol, cellIndex) => renderCel(makeMove, rowIndex, cellIndex,symbol,false))}
+    {cells.map((player1or2, cellIndex) => renderCel(makeMove, rowIndex, cellIndex,player1or2,false))}
   </div>
 )[partBoardToShow(moves)]

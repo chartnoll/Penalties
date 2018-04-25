@@ -8,6 +8,9 @@ import Paper from 'material-ui/Paper'
 import Board from './Board'
 import './GameDetails.css'
 import Striker from './Striker'
+import Goal from './Goal'
+import Save from './Save'
+
 class GameDetails extends PureComponent {
 
   componentWillMount() {
@@ -17,9 +20,14 @@ class GameDetails extends PureComponent {
     }
   }
 
+  changeCelebrate= (celebrate) => {
+    this.props.updateCelebrate("Goal")
+  }
+
   joinGame = () => this.props.joinGame(this.props.game.id)
 
   makeMove = (toRow, toCell) => {
+    console.log("line23",toRow, toCell)
     const {game, updateGame} = this.props
 
     const board = game.board.map(
@@ -28,17 +36,13 @@ class GameDetails extends PureComponent {
         else return cell
       })
     )
+    console.log("line32",game.id, board)
     updateGame(game.id, board)
   }
 
 
-
-
-
-
-
   render() {
-    const {game, users, authenticated, userId} = this.props
+    const {game, users, authenticated, userId, celebrate} = this.props
 
     if (!authenticated) return (
 			<Redirect to="/login" />
@@ -50,7 +54,7 @@ class GameDetails extends PureComponent {
     const player = game.players.find(p => p.userId === userId)
 
     const winner = game.players
-      .filter(p => p.symbol === game.winner)
+      .filter(p => p.player1or2 === game.winner)
       .map(p => p.userId)[0]
 
 
@@ -58,12 +62,13 @@ class GameDetails extends PureComponent {
       <h1>Game #{game.id}</h1>
 
       <p>Status: {game.status}</p>
+      <p>Player 1 score: {game.scoreP1}</p>
+      <p>Player 2 score: {game.scoreP2}</p>
 
       {
         game.status === 'started' &&
-        player && player.symbol === game.turn &&
+        player && player.player1or2 === game.turn &&
         <div>It's your turn!</div>
-
       }
 
       {
@@ -79,11 +84,24 @@ class GameDetails extends PureComponent {
 
       <hr />
 
-      {
-        game.status !== 'pending' &&
-        <Board board={game.board} makeMove={this.makeMove} moves={game.moves}/>
+      <Goal celeberate={celebrate}/ >
+      <Save celeberate={celebrate}/ >
 
+      {
+        if(this.props.celeberate !== 'WIP') (return
+          <div>
+            <Button
+              color="primary"
+              variant="raised"
+              onClick={changeCelebrate(celebrate)}
+              className="create-game"
+            >
+              Righto!
+            </Button>
+          </div>
+        )
       }
+
       <Striker moves={game.moves}/ >
     </Paper>)
   }
@@ -93,11 +111,12 @@ const mapStateToProps = (state, props) => ({
   authenticated: state.currentUser !== null,
   userId: state.currentUser && userId(state.currentUser.jwt),
   game: state.games && state.games[props.match.params.id],
-  users: state.users
+  users: state.users,
+  celebrate: state.celebrate
 })
 
 const mapDispatchToProps = {
-  getGames, getUsers, joinGame, updateGame
+  getGames, getUsers, joinGame, updateGame, updateCelebrate
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(GameDetails)
