@@ -7,7 +7,7 @@ import {userId} from '../../jwt'
 import Paper from 'material-ui/Paper'
 import Board from './Board'
 import './GameDetails.css'
-
+import Striker from './Striker'
 class GameDetails extends PureComponent {
 
   componentWillMount() {
@@ -33,6 +33,10 @@ class GameDetails extends PureComponent {
 
 
 
+
+
+
+
   render() {
     const {game, users, authenticated, userId} = this.props
 
@@ -49,6 +53,7 @@ class GameDetails extends PureComponent {
       .filter(p => p.symbol === game.winner)
       .map(p => p.userId)[0]
 
+
     return (<Paper className="outer-paper">
       <h1>Game #{game.id}</h1>
 
@@ -58,6 +63,7 @@ class GameDetails extends PureComponent {
         game.status === 'started' &&
         player && player.symbol === game.turn &&
         <div>It's your turn!</div>
+
       }
 
       {
@@ -75,8 +81,10 @@ class GameDetails extends PureComponent {
 
       {
         game.status !== 'pending' &&
-        <Board board={game.board} makeMove={this.makeMove} />
+        <Board board={game.board} makeMove={this.makeMove} moves={game.moves}/>
+
       }
+      <Striker moves={game.moves}/ >
     </Paper>)
   }
 }

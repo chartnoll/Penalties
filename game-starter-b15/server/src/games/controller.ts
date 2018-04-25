@@ -76,36 +76,37 @@ export default class GameController {
   // http://restcookbook.com/HTTP%20Methods/idempotency/
   // try to fire the same requests twice, see what happens
   @Patch('/games/:id([0-9]+)')
+  
   async updateGame(
     @CurrentUser() user: User,
     @Param('id') gameId: number,
     @Body() update: GameUpdate
   ) {
+    console.log('made it here!1')
     const game = await Game.findOneById(gameId)
     if (!game) throw new NotFoundError(`Game does not exist`)
-
+    
+    
+    console.log('made it here2')
     const player = await Player.findOne({ user, game })
-
+    console.log('made it here3')
     if (!player) throw new ForbiddenError(`You are not part of this game`)
     if (game.status !== 'started') throw new BadRequestError(`The game is not started yet`)
     if (player.player1or2 !== game.turn) throw new BadRequestError(`It's not your turn`)
-    /*if (!isValidTransition(player.player1or2, game.board, update.board)) {
+    if (!isValidTransition(player.player1or2, game.board, update.board)) {
       throw new BadRequestError(`Invalid move`)
-    }*/
-
-    console.log('2')
-
+     }
+      
     const winner = calculateWinner(update.board)
-    if (winner) {
+    
+    if (finished(update.board)) {
+      game.status = 'finished'
       game.winner = winner
-      game.status = 'finished'
     }
-    else if (finished(update.board)) {
-      game.status = 'finished'
+    else if (!(game.moves%2 === 0)) {
+      game.turn = player.symbol === 1 ? 2 : 1
     }
-    else {
-      game.turn = player.player1or2 === 1 ? 2 : 1
-    }
+      
     game.board = update.board
     game.scoreP1 = calculateScore(update.board).scoreP1
     game.scoreP2 = calculateScore(update.board).scoreP2

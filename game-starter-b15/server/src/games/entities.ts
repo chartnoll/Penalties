@@ -1,7 +1,7 @@
 import { BaseEntity, PrimaryGeneratedColumn, Column, Entity, Index, OneToMany, ManyToOne } from 'typeorm'
 import User from '../users/entity'
 
-export type Symbol = 'x' | 'o'
+
 export type Player1or2 = 1 | 2
 export type Row = [Symbol | null, Symbol | null]
 export type Board = [Row, Row, Row, Row, Row, Row, Row, Row, Row, Row]
@@ -9,7 +9,8 @@ export type Board = [Row, Row, Row, Row, Row, Row, Row, Row, Row, Row]
 type Status = 'pending' | 'started' | 'finished'
 
 const emptyRow: Row = [null, null]
-const emptyBoard: Board = [emptyRow, emptyRow, emptyRow, emptyRow, emptyRow, emptyRow, emptyRow, emptyRow, emptyRow, emptyRow,]
+const emptyBoard: Board = [ emptyRow, emptyRow, emptyRow, emptyRow, emptyRow, emptyRow, emptyRow, emptyRow, emptyRow, emptyRow ]
+
 
 @Entity()
 export class Game extends BaseEntity {
@@ -23,7 +24,7 @@ export class Game extends BaseEntity {
   @Column('integer', { default: 0, nullable: true })
   turn: number
 
-  @Column('char', { length: 1, nullable: true })
+  @Column('char', {length:1, nullable: true})
   winner: Symbol | null
 
   @Column('text', { default: 'pending' })
