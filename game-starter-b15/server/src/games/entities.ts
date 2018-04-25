@@ -2,13 +2,14 @@ import { BaseEntity, PrimaryGeneratedColumn, Column, Entity, Index, OneToMany, M
 import User from '../users/entity'
 
 export type Symbol = 'x' | 'o'
-export type Row = [ Symbol | null, Symbol | null ]
-export type Board = [ Row, Row]
+export type Player1or2 = 1 | 2
+export type Row = [Symbol | null, Symbol | null]
+export type Board = [Row, Row, Row, Row, Row, Row, Row, Row, Row, Row]
 
 type Status = 'pending' | 'started' | 'finished'
 
 const emptyRow: Row = [null, null]
-const emptyBoard: Board = [ emptyRow, emptyRow,]
+const emptyBoard: Board = [emptyRow, emptyRow, emptyRow, emptyRow, emptyRow, emptyRow, emptyRow, emptyRow, emptyRow, emptyRow,]
 
 @Entity()
 export class Game extends BaseEntity {
@@ -16,26 +17,35 @@ export class Game extends BaseEntity {
   @PrimaryGeneratedColumn()
   id?: number
 
-  @Column('json', {default: emptyBoard})
+  @Column('json', { default: emptyBoard })
   board: Board
 
-  @Column('char', {length:1, default: 'x'})
-  turn: Symbol
+  @Column('integer', { default: 0, nullable: true })
+  turn: number
 
-  @Column('char', {length:1, nullable: true})
-  winner: Symbol
+  @Column('char', { length: 1, nullable: true })
+  winner: Symbol | null
 
-  @Column('text', {default: 'pending'})
+  @Column('text', { default: 'pending' })
   status: Status
+
+  @Column('integer', { default: 0, nullable: true })
+  moves: number
+
+  @Column('integer', { default: 0, nullable: true })
+  scoreP1: number
+
+  @Column('integer', { default: 0, nullable: true })
+  scoreP2: number
 
   // this is a relation, read more about them here:
   // http://typeorm.io/#/many-to-one-one-to-many-relations
-  @OneToMany(_ => Player, player => player.game, {eager:true})
+  @OneToMany(_ => Player, player => player.game, { eager: true })
   players: Player[]
 }
 
 @Entity()
-@Index(['game', 'user', 'symbol'], {unique:true})
+  @Index(['game', 'user', 'player1or2'], { unique: true })
 export class Player extends BaseEntity {
 
   @PrimaryGeneratedColumn()
@@ -50,6 +60,6 @@ export class Player extends BaseEntity {
   @Column()
   userId: number
 
-  @Column('char', {length: 1})
-  symbol: Symbol
+  @Column('integer', { default: 0, nullable: true })
+  player1or2: Player1or2
 }
