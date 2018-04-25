@@ -3,7 +3,7 @@ import User from '../users/entity'
 
 
 export type Player1or2 = 1 | 2
-export type Row = [Symbol | null, Symbol | null]
+export type Row = [Player1or2 | null, Player1or2 | null]
 export type Board = [Row, Row, Row, Row, Row, Row, Row, Row, Row, Row]
 
 type Status = 'pending' | 'started' | 'finished'
@@ -21,11 +21,11 @@ export class Game extends BaseEntity {
   @Column('json', { default: emptyBoard })
   board: Board
 
-  @Column('integer', { default: 0, nullable: true })
+  @Column('integer', { default: 1, nullable: true })
   turn: number
 
-  @Column('char', {length:1, nullable: true})
-  winner: Symbol | null
+  @Column('integer', {nullable: true})
+  winner: Player1or2 | null
 
   @Column('text', { default: 'pending' })
   status: Status

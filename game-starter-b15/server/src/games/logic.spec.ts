@@ -1,7 +1,7 @@
 
 import 'mocha'
 import { equal } from 'assert'
-import { calculateWinner, isValidTransition, finished, goalScored, calculateScore, calculateMove } from './logic'
+import { calculateWinner, isValidTransition, finished, calculateScore, calculateMove } from './logic'
 import { Board } from './entities'
 
 const board1 = [
@@ -42,7 +42,7 @@ const board3 = [
   [null, null],
   [null, null]
 ]
-
+/*
 describe('goalScored()', () => {
 
   it('Should calculate a goal scored on move 14', () => {
@@ -61,7 +61,7 @@ describe('goalScored()', () => {
     const moves = 14
     equal(goalScored(board, moves), true)
   })
-})
+})*/
 
 describe('calculateScore()', () => {
   it('Score P1 for board 1 = 2', () => {
