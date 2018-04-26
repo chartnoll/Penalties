@@ -1,38 +1,38 @@
 
 import 'mocha'
 import { equal } from 'assert'
-import { calculateWinner, isValidTransition, finished, calculateScore, calculateMove } from './logic'
+import { calculateWinner, isValidTransition, finished, calculateScore, calculateMove, updateCelebrate } from './logic'
 import { Board } from './entities'
 
 const board1 = [
-  [null, 'o'],
-  ['x', 'o'],
-  ['o', 'x'],
-  ['x', 'o'],
-  [null, 'o'],
-  ['x', 'o'],
-  ['x', 'o'],
+  [null, 2],
+  [1, 2],
+  [2, 1],
+  [2, 1],
+  [null, 2],
+  [2, 1],
+  [1, 2],
   [null, null],
   [null, null],
   [null, null]
 ]
 
 const board2 = [
-  [null, 'o'],
-  ['x', 'o'],
-  ['o', 'x'],
-  ['x', 'o'],
-  [null, 'o'],
-  ['x', 'o'],
-  ['x', 'o'],
-  [null, 'o'],
-  ['x', 'o'],
-  [null, null]
+  [null, 2],
+  [1, 2],
+  [2, 1],
+  [2, 1],
+  [null, 2],
+  [1, 2],
+  [1, 2],
+  [null, 1],
+  [2, 1],
+  [2, null]
 ]
 
 const board3 = [
-  [null, 'o'],
-  ['x', 'o'],
+  [2, null],
+  [2, 1],
   [null, null],
   [null, null],
   [null, null],
@@ -42,26 +42,19 @@ const board3 = [
   [null, null],
   [null, null]
 ]
-/*
-describe('goalScored()', () => {
 
-  it('Should calculate a goal scored on move 14', () => {
-    const board = [
-      [null, 'o'],
-      ['x', 'o'],
-      ['o', 'x'],
-      ['x', 'o'],
-      [null, 'o'],
-      ['x', 'o'],
-      ['x', 'o'],
-      [null, null],
-      [null, null],
-      [null, null]
-    ]
-    const moves = 14
-    equal(goalScored(board, moves), true)
-  })
-})*/
+const board4 = [
+  [2, null],
+  [2, 1],
+  [1, null],
+  [null, null],
+  [null, null],
+  [null, null],
+  [null, null],
+  [null, null],
+  [null, null],
+  [null, null]
+]
 
 describe('calculateScore()', () => {
   it('Score P1 for board 1 = 2', () => {
@@ -94,158 +87,23 @@ describe('calculateMove()', () => {
   it('CalculateMove for board1 should equal 14', () => {
     equal(calculateMove(board1), 14)
   })
-})
 
-/*
-
-describe('calculateWinner()', () => {
-
-  it('should work for a horizontal winner', () => {
-    const board: Board = [
-      ['x', 'x', 'o'],
-      ['x', 'x', 'x'],
-      [null, 'o', 'o'],
-    ]
-    equal(calculateWinner(board), 'x')
+  it('CalculateMove for board2 should equal 19', () => {
+    equal(calculateMove(board2), 19)
   })
 
-  it('should work for a vertical winner', () => {
-    const board: Board = [
-      ['o', 'x', 'o'],
-      ['x', 'x', 'o'],
-      [null, 'o', 'o'],
-    ]
-    equal(calculateWinner(board), 'o')
+  it('CalculateMove for board2 should equal 14', () => {
+    equal(calculateMove(board3), 4)
   })
 
-  it('should work for a diagonal winner [rtl]', () => {
-    const board: Board = [
-      ['o', 'x', 'x'],
-      [null, 'x', 'o'],
-      ['x', 'o', 'o'],
-    ]
-    equal(calculateWinner(board), 'x')
-  })
-
-  it('should work for a diagonal winner [ltr]', () => {
-    const board: Board = [
-      ['o', null, 'x'],
-      [null, 'o', 'o'],
-      ['x', 'o', 'o'],
-    ]
-    equal(calculateWinner(board), 'o')
-  })
-
-  it('should work when there is no winner', () => {
-    const board: Board = [
-      ['o', null, 'x'],
-      [null, null, 'o'],
-      ['x', 'o', 'o'],
-    ]
-    equal(calculateWinner(board), null)
-  })
-
-  it('should work when the board is empty', () => {
-    const board: Board = [
-      [null, null, null],
-      [null, null, null],
-      [null, null, null],
-    ]
-    equal(calculateWinner(board), null)
+  it('CalculateMove for board4 should equal 5', () => {
+    equal(calculateMove(board4), 5)
   })
 })
 
-describe('isValidTransition()', () => {
+describe('updateCelebrate()', () => {
 
-  it('should allow for a move from x', () => {
-    const from: Board = [
-      ['o', null, 'x'],
-      [null, null, 'o'],
-      ['x', 'o', 'o'],
-    ]
-    const to: Board = [
-      ['o', null, 'x'],
-      [null, 'x', 'o'],
-      ['x', 'o', 'o'],
-    ]
-    equal(isValidTransition('x', from, to), true)
-  })
-
-  it('should allow for a move from o', () => {
-    const from: Board = [
-      ['o', null, null],
-      [null, 'x', 'o'],
-      ['x', 'o', 'o'],
-    ]
-    const to: Board = [
-      ['o', null, 'o'],
-      [null, 'x', 'o'],
-      ['x', 'o', 'o'],
-    ]
-    equal(isValidTransition('o', from, to), true)
-  })
-
-  it('should not allow to overwrite', () => {
-    const from: Board = [
-      ['o', null, null],
-      [null, 'x', 'o'],
-      ['x', 'o', 'o'],
-    ]
-    const to: Board = [
-      ['o', null, null],
-      [null, 'x', 'o'],
-      ['x', 'o', 'x'],
-    ]
-    equal(isValidTransition('x', from, to), false)
-  })
-
-  it('should not allow to do more than 1 change', () => {
-    const from: Board = [
-      ['o', null, null],
-      [null, 'x', 'o'],
-      ['x', 'o', 'o'],
-    ]
-    const to: Board = [
-      ['o', 'x', 'x'],
-      [null, 'x', 'o'],
-      ['x', 'o', 'o'],
-    ]
-    equal(isValidTransition('x', from, to), false)
-  })
-
-  it('should not allow to do more than 1 change even if 1 is valid', () => {
-    const from: Board = [
-      ['o', null, null],
-      [null, 'x', 'o'],
-      ['x', 'o', 'o'],
-    ]
-    const to: Board = [
-      ['o', null, 'o'],
-      [null, 'x', 'o'],
-      [null, 'o', 'o'],
-    ]
-    equal(isValidTransition('o', from, to), false)
+  it('updateCelebrate for board1 should equal 14', () => {
+    equal(updateCelebrate(board1, 14), "goal")
   })
 })
-
-describe('finished()', () => {
-
-  it('should finish when there are no moves left', () => {
-    const board: Board = [
-      ['o', 'o', 'x'],
-      ['x', 'x', 'o'],
-      ['x', 'o', 'o'],
-    ]
-    equal(finished(board), true)
-  })
-
-  it('should not finish when there are moves left', () => {
-    const board: Board = [
-      ['o', null, 'x'],
-      [null, null, 'o'],
-      ['x', 'o', 'o'],
-    ]
-    equal(finished(board), false)
-  })
-})
-*/
