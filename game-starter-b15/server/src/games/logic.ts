@@ -14,7 +14,7 @@ export class IsBoard implements ValidatorConstraintInterface {
   }
 }
 
-export const isValidTransition = (playerSymbol , from: Board, to: Board) => {
+/*export const isValidTransition = (playerSymbol , from: Board, to: Board) => {
   const changes = from
     .map(
       (row, rowIndex) => row.map((symbol, columnIndex) => ({
@@ -24,27 +24,32 @@ export const isValidTransition = (playerSymbol , from: Board, to: Board) => {
     )
     .reduce((a, b) => a.concat(b))
     .filter(change => change.from !== change.to)
-  return changes.length === 1}
+  return changes.length === 1}*/
 
-export const calculateWinner = (board: Board): Player1or2 | null => {if(board.filter(function(element){element === null}).length >= 3)
-{return 1}
-else {return 2}
+export const calculateWinner = (score1, score2) => {
+  if( score1 > score2) return 1
+  if (score1 < score2) return 2
+  return 0
 }
 
 export const finished = (board: Board): boolean =>
   (board[9].includes(1))
 
-const isGoalScored = (row) => {
-  if(row.includes(null) === true) return 0
-  else return 1
+export const isGoalScored = (row, index) => {
+  const lookFor = (index%2)+1
+  let goal = 0
+  if( row.includes(lookFor) ) goal = 1
+  return goal
 }
 
 export const calculateMove = (board) => {
   let moveCounter = 0
   board.map( (row, index) => {
-    if(row.includes(2)) moveCounter = (index + 1) * 2
-    else if (row.includes(1)) moveCounter = ((index + 1) * 2) - 1
-    console.log(row, index, moveCounter)
+    if(row.includes( 2-(index%2) )) moveCounter = (index + 1) * 2
+    else if (row.includes( (index % 2) +1 )){
+      moveCounter = ((index + 1) * 2) - 1
+    }
+    //console.log(row, 2 - (index % 2), index, moveCounter)
   })
   return moveCounter
 }
@@ -55,8 +60,21 @@ export const calculateScore = (board) => {
   score[0] = 0
   score[1] = 0
   board.map( (row, index) => {
-    //console.log(index, moves, score[0], score[1], (index) % 2, isGoalScored(row))
-    if(index <= moves/2) score[(index)%2] += isGoalScored(row)
+    if (index <= (moves / 2) - 1) score[(index) % 2] += isGoalScored(row, index)
   })
-  return { scoreP1: score[0], scoreP2: score[1] }
+    return { scoreP1: score[0], scoreP2: score[1] }
+}
+
+export const updateCelebrate = (board, moves) => {
+  let celebrate = "WIP"
+  console.log(moves)
+  if( moves === 0) celebrate = "WIP"
+  if( moves % 2 === 0){
+    const indexToCheck = (moves - 1)/2
+    console.log(indexToCheck, board[indexToCheck], isGoalScored(board[indexToCheck], indexToCheck))
+    if (isGoalScored(board[indexToCheck], indexToCheck)) celebrate = "goal"
+    else celebrate = "save"
+  }
+  else celebrate = "WIP"
+  return celebrate
 }
