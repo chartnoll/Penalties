@@ -23,6 +23,7 @@ class GamesList extends PureComponent {
     return (<Card key={game.id} className="game-card">
       <CardContent>
         <Typography color="textSecondary">
+        {console.log("game.players is",game.players)}
           This game is played by&nbsp;
           {
             game.players
