@@ -5,13 +5,14 @@ import {connect} from 'react-redux'
 const renderCel = (makeMove, rowIndex, cellIndex, player1or2, hasTurn) => {
   return (
     <button
-      className="board-tile"
-      disabled={hasTurn}
-      onClick={() => makeMove(rowIndex, cellIndex)}
-      key={`${rowIndex}-${cellIndex}`}
-    >{'-'}</button>
+    className="board-tile"
+    disabled={hasTurn}
+    onClick={() => makeMove(rowIndex, cellIndex)}
+    key={`${rowIndex}-${cellIndex}`}
+  >{'-'}</button>
   )
 }
+
 
 const partBoardToShow = (moves) => {
 
