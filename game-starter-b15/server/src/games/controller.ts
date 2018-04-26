@@ -4,7 +4,7 @@ import {
 } from 'routing-controllers'
 import User from '../users/entity'
 import { Game, Player, Board } from './entities'
-import { IsBoard, isValidTransition, calculateWinner, finished, calculateScore, calculateMove } from './logic'
+import { IsBoard, isValidTransition, calculateWinner, finished, calculateScore, calculateMove, isGoalScored, updateCelebrate } from './logic'
 import { Validate } from 'class-validator'
 import { io } from '../index'
 
@@ -86,31 +86,42 @@ export default class GameController {
     const game = await Game.findOneById(gameId)
     if (!game) throw new NotFoundError(`Game does not exist`)
     
-    
     console.log('made it here2')
+
     const player = await Player.findOne({ user, game })
-    console.log('made it here3')
+
+    //console.log('made it here3', player.player1or2, game.turn)
+
     if (!player) throw new ForbiddenError(`You are not part of this game`)
     if (game.status !== 'started') throw new BadRequestError(`The game is not started yet`)
     if (player.player1or2 !== game.turn) throw new BadRequestError(`It's not your turn`)
-    if (!isValidTransition(player.player1or2, game.board, update.board)) {
+    /*if (!isValidTransition(player.player1or2, game.board, update.board)) {
       throw new BadRequestError(`Invalid move`)
-     }
+     }*/
+
+    game.scoreP1 = calculateScore(update.board).scoreP1
+    game.scoreP2 = calculateScore(update.board).scoreP2
       
-    const winner = calculateWinner(update.board)
-    
+    const winner = calculateWinner(game.scoreP1, game.scoreP2)
+
     if (finished(update.board)) {
       game.status = 'finished'
       game.winner = winner
     }
-    else if (!(game.moves%2 === 0)) {
-      game.turn = player.player1or2 === 1 ? 2 : 1
+    else if (game.moves%2 === 0){
+      if(game.turn === 1) game.turn = 2
+      else game.turn = 1
     }
+    
+    /*(!(game.moves%2 === 0)) {
+      game.turn = player.player1or2 === 1 ? 2 : 1
+    }*/
       
     game.board = update.board
-    game.scoreP1 = calculateScore(update.board).scoreP1
-    game.scoreP2 = calculateScore(update.board).scoreP2
     game.moves = calculateMove(update.board)
+
+    game.celebrate = updateCelebrate(update.board, game.moves)
+
     await game.save()
 
     console.log('3')
