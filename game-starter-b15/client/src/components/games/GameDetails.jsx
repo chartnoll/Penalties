@@ -8,6 +8,7 @@ import Paper from 'material-ui/Paper'
 import Board from './Board'
 import './GameDetails.css'
 import Striker from './Striker'
+import GoalOrSave from './GoalOrSave'
 class GameDetails extends PureComponent {
 
   componentWillMount() {
@@ -38,7 +39,7 @@ class GameDetails extends PureComponent {
 
 
   render() {
-    const {game, users, authenticated, userId} = this.props
+    const {game, users, authenticated, userId, celebrate} = this.props
 
     if (!authenticated) return (
 			<Redirect to="/login" />
@@ -82,8 +83,11 @@ class GameDetails extends PureComponent {
 
       {
         game.status !== 'pending' &&
+        //celebrate === "asd" &&
         <Board board={game.board} makeMove={this.makeMove} moves={game.moves}/>
       }
+
+      <GoalOrSave celeberate={celebrate} status={game.status}/ >
       <Striker moves={game.moves}/ >
     </Paper>)
   }
@@ -93,7 +97,8 @@ const mapStateToProps = (state, props) => ({
   authenticated: state.currentUser !== null,
   userId: state.currentUser && userId(state.currentUser.jwt),
   game: state.games && state.games[props.match.params.id],
-  users: state.users
+  users: state.users,
+  celeberate: state.celebrate
 })
 
 const mapDispatchToProps = {
