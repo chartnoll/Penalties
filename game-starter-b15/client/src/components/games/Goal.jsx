@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react'
-import Goal from './images/Goal.jpeg'
-import Save from './images/Save.jpeg'
+import goalImage from './images/Goal.jpeg'
+//import Save from './images/Save.jpeg'
 
 export default class Goal extends PureComponent {
 

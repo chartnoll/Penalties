@@ -9,7 +9,7 @@ const renderCel = (makeMove, rowIndex, cellIndex, player1or2, hasTurn) => {
       disabled={hasTurn}
       onClick={() => makeMove(rowIndex, cellIndex)}
       key={`${rowIndex}-${cellIndex}`}
-    >{player1or2 || '-'}</button>
+    >{'-'}</button>
   )
 }
 
